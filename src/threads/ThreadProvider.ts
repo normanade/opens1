@@ -94,8 +94,14 @@ export default class ThreadProvider implements TextDocumentContentProvider {
           let messageElement = $(`#postmessage_${pid}`);
           // 提取图片
           messageElement.find('img').each((i, img) => {
-            const src = $(img).attr('src');
+            let src = $(img).attr('src');
+            // 如果src为空，尝试从file属性获取
+            if (!src) {
+              src = $(img).attr('file');
+            }
+            // 去除可能的反引号
             if (src) {
+              src = src.replace(/[`]/g, '').trim();
               // 替换为markdown图片语法
               $(img).replaceWith(`![图片](${src})`);
             }
