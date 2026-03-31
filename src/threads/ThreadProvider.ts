@@ -91,8 +91,17 @@ export default class ThreadProvider implements TextDocumentContentProvider {
           }
           const author = $(`#favatar${pid} .xw1`).text().trim();
           const posttime = $(`#authorposton${pid}`).text().trim().slice(4);
-          const message = $(`#postmessage_${pid}`)
-            .text()
+          let messageElement = $(`#postmessage_${pid}`);
+          // 提取图片
+          messageElement.find('img').each((i, img) => {
+            const src = $(img).attr('src');
+            if (src) {
+              // 替换为markdown图片语法
+              $(img).replaceWith(`![图片](${src})`);
+            }
+          });
+          // 提取文本并处理换行
+          const message = messageElement.text()
             .trim()
             .replace(/<br>/g, "\n")
             .replace(/(\n)+/g, "\n\n");
